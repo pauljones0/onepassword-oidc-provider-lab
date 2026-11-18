@@ -1,4 +1,7 @@
 .lab-private-key.pem
 .lab-public-key.pem
+.lab-attacker-private-key.pem
+.lab-attacker-public-key.pem
+node_modules/
 tokens/
 

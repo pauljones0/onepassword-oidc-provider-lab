@@ -28,6 +28,8 @@ After establishing one valid baseline token, test one variable at a time:
 
 Every probe must retrieve only a synthetic canary from a researcher-owned Environment and record presence plus a digest, never the raw value.
 
+`scripts/run-verifier-matrix.mjs` implements the matrix without printing JWTs, integration keys, or Environment values. It requires a researcher-owned custom-OIDC integration and workload configured with the exact claim `role=baseline`.
+
 ## Mint a token
 
 ```sh
