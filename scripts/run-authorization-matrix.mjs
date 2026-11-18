@@ -129,5 +129,23 @@ console.log(
   }),
 );
 
-console.log(JSON.stringify({ summary: "custom_oidc_authorization_matrix", total: cases.length + 1, unexpected }));
+const concurrentReplayToken = mintToken("https://api.1password.com");
+const concurrentReplayResults = await Promise.all([
+  authorize({ fetchToken: async () => concurrentReplayToken }),
+  authorize({ fetchToken: async () => concurrentReplayToken }),
+]);
+const concurrentAllows = concurrentReplayResults.filter((result) => result.outcome === "allow").length;
+const concurrentReplayVerdict = concurrentAllows <= 1 ? "expected" : "unexpected";
+if (concurrentReplayVerdict === "unexpected") unexpected += 1;
+console.log(
+  JSON.stringify({
+    case: "concurrent_exact_subject_token_replay",
+    expected_maximum_allows: 1,
+    actual_allows: concurrentAllows,
+    result: concurrentReplayVerdict,
+    variables_released_by: concurrentReplayResults.map((result) => result.variablesReleased),
+  }),
+);
+
+console.log(JSON.stringify({ summary: "custom_oidc_authorization_matrix", total: cases.length + 2, unexpected }));
 if (unexpected > 0) process.exitCode = 2;
