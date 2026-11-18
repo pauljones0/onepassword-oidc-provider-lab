@@ -129,10 +129,14 @@ console.log(
   }),
 );
 
-const concurrentReplayToken = mintToken("https://api.1password.com");
+let concurrentReplayToken;
+const fetchConcurrentReplayToken = async (audience) => {
+  concurrentReplayToken ??= mintToken(audience);
+  return concurrentReplayToken;
+};
 const concurrentReplayResults = await Promise.all([
-  authorize({ fetchToken: async () => concurrentReplayToken }),
-  authorize({ fetchToken: async () => concurrentReplayToken }),
+  authorize({ fetchToken: fetchConcurrentReplayToken }),
+  authorize({ fetchToken: fetchConcurrentReplayToken }),
 ]);
 const concurrentAllows = concurrentReplayResults.filter((result) => result.outcome === "allow").length;
 const concurrentReplayVerdict = concurrentAllows <= 1 ? "expected" : "unexpected";
